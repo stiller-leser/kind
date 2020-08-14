@@ -68,7 +68,13 @@ fi
 
 # run kubeadm to create cluster - ignore preflights as there will be failures because of swap, systemd, lots of things..
 if [ ! -f /var/lib/kubeadm.yaml ]; then
-    cp /var/tmp/minikube/kubeadm.yaml.new /var/lib/kubeadm.yaml
+    if [ -f /var/tmp/minikube/kubeadm.yaml ]
+    then
+      cp /var/tmp/minikube/kubeadm.yaml /var/lib/kubeadm.yaml
+    elif [ -f /var/tmp/minikube/kubeadm.yaml.new ]
+    then
+      cp /var/tmp/minikube/kubeadm.yaml.new /var/lib/kubeadm.yaml
+    fi
 fi
 /usr/bin/kubeadm config migrate --old-config /var/lib/kubeadm.yaml --new-config /var/lib/kubeadm.yaml
 /usr/bin/kubeadm init --config /var/lib/kubeadm.yaml --ignore-preflight-errors=all
@@ -99,10 +105,6 @@ kubectl -n kube-system delete cm coredns
 kubectl -n kube-system create -f coredns-cm.yaml
 rm -f coredns-cm.yaml
 
-# expose kube config so external consumers can call in
-cp /root/.minikube/proxy-client-ca.crt /var/kube-config/client.crt
-cp /root/.minikube/proxy-client-ca.key /var/kube-config/client.key
-cp /root/.minikube/ca.crt /var/kube-config/ca.crt
 # tweak cluster naming in config so it is identifiable as kind to test clients
 sed -i "s|kubernetes\|kubernetes-admin@kubernetes|kind|g" /root/.kube/config
 cp /root/.kube/config /var/kube-config/config
