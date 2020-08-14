@@ -78,9 +78,9 @@ Pre-built images are available on dockerhub (https://hub.docker.com/r/bsycorp/ki
 
 Run `./build.sh <image name>` to build the image. Add your custom images to `/images.sh` to have them be available at runtime. These environment variables are available to configure the build:
 
-- DOCKER_IMAGE: defaults to `19.03.5-dind`
-- MINIKUBE_VERSION: defaults to `v1.0.1`
-- KUBERNETES_VERSION: defaults to `v1.14.8`
+- DOCKER_IMAGE: defaults to `stable-dind`
+- MINIKUBE_VERSION: defaults to `v1.9.2`
+- KUBERNETES_VERSION: defaults to `v1.18.8`
 - STATIC_IP: defaults to `172.30.99.1`
 
 We use git submodules to pull in this project and then add images and CI configuration around it, but there are other ways to do it.
@@ -89,7 +89,9 @@ We use git submodules to pull in this project and then add images and CI configu
 
 There are two hooks available during the `kind` build, `before-cluster.sh` and `after-cluster.sh`. As their names suggest they are run directly before and after the kube cluster is created.
 
-Examples of this scripts exist in the repo already, but they can be overwritten / extended to add extra functionality.
+Examples of this scripts exist in the repo already, but they can be overwritten / extended to add extra functionality. In this fork, they contain everything that is needed to work with volumes and csi-snapshotting!
+
+Also: Because I am lazy, they do include the default bash tricks from the official [k8s cheatsheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) as well.
 
 ## kubectl client configuraiton
 

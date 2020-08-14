@@ -16,4 +16,21 @@ kubectl create -f external-snapshotter/deploy/kubernetes/csi-snapshotter
 sed -i -e 's/default/kube-system/g' external-snapshotter/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml
 sed -i -e 's/default/kube-system/g' external-snapshotter/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
 kubectl create -f external-snapshotter/deploy/kubernetes/snapshot-controller
+# We also need the corresponding StorageClass and VolumeStorageClass
+sed -i -e 's/default/kube-system/g' external-snapshotter/examples/kubernetes/storageclass.yaml
+sed -i -e 's/default/kube-system/g' external-snapshotter/examples/kubernetes/snapshotclass.yaml
+kubectl create -f external-snapshotter/examples/kubernetes/storageclass.yaml
+kubectl create -f external-snapshotter/examples/kubernetes/snapshotclass.yaml
 kubectl config set-context --current --namespace=default
+
+# We do not need that repository any longer
+rm -rf external-snapshotter
+
+# And because we are lazy, let's install some k8s helper
+source /etc/profile
+cat <<EOT >> /root/.bashrc
+source <(kubectl completion bash)
+alias k="kubectl"
+complete -F __start_kubectl k
+EOT
+source ~/.bashrc
