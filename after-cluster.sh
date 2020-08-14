@@ -26,11 +26,5 @@ kubectl config set-context --current --namespace=default
 # We do not need that repository any longer
 rm -rf external-snapshotter
 
-# And because we are lazy, let's install some k8s helper
-source /etc/profile
-cat <<EOT >> /root/.bashrc
-source <(kubectl completion bash)
-alias k="kubectl"
-complete -F __start_kubectl k
-EOT
-source ~/.bashrc
+# And because we are lazy, let's install some k8s helper (see build.sh for copy of .bashrc)
+chown root:root /root/.bashrc
